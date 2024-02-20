@@ -17,6 +17,8 @@ public class DataPlotter : MonoBehaviour
 
     void Start()
     {
+        return;
+
         for (int i = 0; i < numPoints;  i++)
         {
             var position = new Vector3(
