@@ -5,11 +5,11 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private Camera followingCamera;
     [SerializeField] private float speed;
+    [SerializeField] private Transform player;
 
-    private float horizontalInput;
-    private float verticalInput;
+    public float mouseSensitivity;
+    private float xRotation = 0.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -21,19 +21,29 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
+        // MOUSE
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
-        followingCamera.transform.position = transform.position;
-        followingCamera.transform.rotation = transform.rotation;
+        // ARROWS
+        //horizontalInput = Input.GetAxisRaw("Horizontal") * mouseSensitivity * Time.deltaTime;
+        //verticalInput = Input.GetAxisRaw("Vertical") * mouseSensitivity * Time.deltaTime;
+
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90.0f, 90.0f);
+
+        transform.localRotation = Quaternion.Euler(xRotation, 0.0f, 0.0f);
+        player.Rotate(mouseX * Vector3.up);
+        //transform.position = transform.forward * verticalInput * speed;
+        //transform.rotation = transform.right * horizontalInput * speed;
     }
 
-    private void FixedUpdate()
-    {
-        var front = followingCamera.transform.forward * verticalInput * speed;
-        var right = followingCamera.transform.right * horizontalInput * speed;
-        var desiredPosition = this.transform.position + front + right;
+    //private void FixedUpdate()
+    //{
+    //    var front = followingCamera.transform.forward * verticalInput * speed;
+    //    var right = followingCamera.transform.right * horizontalInput * speed;
+    //    var desiredPosition = this.transform.position + front + right;
 
-        transform.position = Vector3.LerpUnclamped(transform.position, desiredPosition, Time.deltaTime);
-    }
+    //    transform.position = Vector3.LerpUnclamped(transform.position, desiredPosition, Time.deltaTime);
+    //}
 }

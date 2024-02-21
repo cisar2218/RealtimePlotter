@@ -9,7 +9,7 @@ public class VoxelRenderer : MonoBehaviour
     bool voxelsUpdated = false;
 
     public int numPoints = 10000;
-    public float voxelScale = 0.01f;
+    public float voxelScale = 0.1f;
     public float scale = 1f;
 
     void Awake()
