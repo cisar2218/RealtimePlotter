@@ -11,6 +11,7 @@ public class VoxelRenderer : MonoBehaviour
     public int numPoints = 10000;
     public float voxelScale = 0.1f;
     public float scale = 1f;
+    public float updateDelay = 0.3f;
 
     void Awake()
     {
@@ -22,7 +23,7 @@ public class VoxelRenderer : MonoBehaviour
         while (true)
         {
             Init();
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(updateDelay);
         }
     }
 
@@ -35,7 +36,7 @@ public class VoxelRenderer : MonoBehaviour
         for (int i = 0; i < numPoints; i++)
         {
             positions[i] = new Vector3(
-                Random.Range(-bound, bound), Random.Range(-bound, bound), Random.Range(-bound, bound)
+                Random.Range(-bound, bound), Random.Range(-bound/2, bound/2), Random.Range(-bound, bound)
                 );
             colors[i] = new Color(Random.value, Random.value, Random.value);
         }
