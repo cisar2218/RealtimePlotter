@@ -46,7 +46,6 @@ public class VoxelRenderer : MonoBehaviour
 
     private void Start()
     {
-        //Init();
         StartCoroutine(UpdateLoop());
     }
 
