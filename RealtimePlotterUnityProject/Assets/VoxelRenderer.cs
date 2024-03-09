@@ -16,6 +16,8 @@ public class VoxelRenderer : MonoBehaviour
     public float scale = 1f;
     public float updateDelay = 0.3f;
 
+    public float bound = 10.0f;
+
     public UpdateMode mode;
 
     Vector3[] lastPositions;
@@ -64,7 +66,7 @@ public class VoxelRenderer : MonoBehaviour
 
     void Init()
     {
-        float bound = 10;
+        bound = 10;
         Vector3[] positions = new Vector3[numPoints];
         Color[] colors = new Color[numPoints];
 
@@ -136,5 +138,12 @@ public class VoxelRenderer : MonoBehaviour
 
         Debug.Log("Voxel count:" + voxels.Length);
         voxelsUpdated = true;
+    }
+
+    void OnDrawGizmos()
+    {
+        // Draw a semitransparent red cube at the transforms position
+        Gizmos.color = new Color(1, 0, 0, 0.5f);
+        Gizmos.DrawCube(transform.position, new Vector3(bound, bound, bound));
     }
 }
