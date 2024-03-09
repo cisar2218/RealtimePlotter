@@ -127,7 +127,6 @@ public class VoxelRenderer : MonoBehaviour
     void SetVoxels(Vector3[] positions, Color[] colors)
     {
         voxels = new ParticleSystem.Particle[positions.Length];
-        
 
         for (int i = 0; i < positions.Length; i++)
         {

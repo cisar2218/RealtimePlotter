@@ -676,6 +676,7 @@ GameObject:
   - component: {fileID: 1322655112}
   - component: {fileID: 1322655111}
   - component: {fileID: 1322655114}
+  - component: {fileID: 1322655115}
   m_Layer: 0
   m_Name: Particle System
   m_TagString: Untagged
@@ -5502,7 +5503,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1322655110}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 334be3f4244bcd841ac251089a418247, type: 3}
   m_Name: 
@@ -5515,6 +5516,25 @@ MonoBehaviour:
   updateDelay: 0.3
   bound: 100
   mode: 1
+--- !u!114 &1322655115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322655110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd8f91c1f11e15e4ba8b58e2a98e99ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  voxelsCount: 0
+  numPoints: 1000
+  pointPerSec: 20
+  voxelScale: 0.1
+  scale: 1
+  updateDelay: 0.3
+  bound: 10
 --- !u!1 &1596748330
 GameObject:
   m_ObjectHideFlags: 0
