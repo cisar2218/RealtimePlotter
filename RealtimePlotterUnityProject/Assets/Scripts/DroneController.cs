@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerController : MonoBehaviour
+public class DroneController : MonoBehaviour
 {
     public float speed = 15f;
-    public float speedVertical = 15f;
+
     private CharacterController controller;
 
     void Awake()
@@ -14,12 +15,8 @@ public class PlayerController : MonoBehaviour
         controller = GetComponent<CharacterController>();
     }
 
-    void HandleMovement()
+    float GetVerticalMovement()
     {
-        bool dronEnabled = Input.GetKey(KeyCode.LeftAlt);
-        if (dronEnabled) { return; }
-
-        // vertical movement
         bool flyUp = Input.GetKey(KeyCode.Space);
         bool flyDown = Input.GetKey(KeyCode.LeftControl);
         var y = 0.0f;
@@ -32,23 +29,21 @@ public class PlayerController : MonoBehaviour
         {
             y = -1 * speed * Time.deltaTime;
         }
+        return y;
+    }
+
+    void Update()
+    {
+        // drop movement enabled
+        bool dronEnabled = Input.GetKey(KeyCode.LeftAlt);
+        if (!dronEnabled) { return; }
 
         // horizontal movement
         var x = Input.GetAxisRaw("Horizontal") * speed * Time.deltaTime;
         var z = Input.GetAxisRaw("Vertical") * speed * Time.deltaTime;
 
-        // speedup
-        bool speedUp = Input.GetKey(KeyCode.LeftShift);
-        if (speedUp)
-        {
-            x *= 2; z *= 2;
-        }
+        var y = GetVerticalMovement();
 
-        controller.Move(transform.right * x + transform.up * y + transform.forward * z);
-    }
-
-    void Update()
-    {
-        HandleMovement();
+        controller.Move(transform.right * -x + /* transform.up * 0 + */ transform.up * z);
     }
 }

@@ -11,35 +11,71 @@ public class VoxelRenderer2 : MonoBehaviour
     bool voxelsUpdated = false;
 
     public int voxelsCount = 0;
-    public int numPoints = 10000;
+    public int maxPoints = 54000;
     public int pointPerSec = 20;
     public float voxelScale = 0.1f;
-    public float scale = 1f;
-    public float updateDelay = 0.3f;
+    public float updatesPerSec = 3f;
+    public float startLifetime = 10f;
+
+    private float cumulativeTime = 0f;
+
+    public Transform dronTransform;
+
 
     public float bound = 10.0f;
-
 
     void Awake()
     {
         system = GetComponent<ParticleSystem>();
     }
 
+    
+
+    private void AddPoints(int howMany, Color color)
+    {
+        var initVoxelsCount = voxelsCount;
+        while (voxelsCount < initVoxelsCount + howMany)
+        {
+            voxels[voxelsCount].startColor = color;
+            voxels[voxelsCount].startSize = voxelScale;
+            voxels[voxelsCount].startLifetime = startLifetime;
+            voxels[voxelsCount].remainingLifetime = startLifetime;
+
+            var posX = dronTransform.position.x + Random.Range(-bound, bound);
+            var posY = dronTransform.position.y + Random.Range(-bound, bound) / 2;
+            var posZ = dronTransform.position.z + Random.Range(-bound, bound);
+            voxels[voxelsCount].position = new Vector3(
+                posX, posY, posZ
+                );
+            voxelsCount += 1;
+        }
+    }
+
     private IEnumerator UpdateLoop()
     {
-        InitVoxels();
-        SetVoxels();
-        bool isUpdating = true;
-        while (isUpdating)
+        while (voxelsCount < maxPoints)
         {
-            // TODO
-            yield return new WaitForSeconds(updateDelay);
+            AddPoints(pointPerSec, new Color(Random.value, Random.value, Random.value));
+            yield return new WaitForSeconds(1/updatesPerSec);
+            voxelsUpdated = true;
         }
+        voxelsUpdated = true;
     }
 
     private void Start()
     {
+        voxels = new ParticleSystem.Particle[maxPoints];
         StartCoroutine(UpdateLoop());
+
+
+        //for (int i = 0; i < voxels.Length / 2; i++)
+        //{
+        //    voxels[i].startColor = new Color(1.0f, 0.0f, 0.0f);
+        //    voxels[i].startSize = voxelScale;
+        //    voxels[i].position = new Vector3(
+        //        Random.Range(-bound, bound), Random.Range(-bound / 2, bound / 2), Random.Range(-bound, bound)
+        //        );
+        //}
     }
 
     void Update()
@@ -47,41 +83,44 @@ public class VoxelRenderer2 : MonoBehaviour
         if (voxelsUpdated)
         {
             system.SetParticles(voxels, voxels.Length);
-            voxelsUpdated = false;
+
             Debug.Log("Update called");
+            Debug.Log("Start:"+ voxels[0].startLifetime);
+            Debug.Log("Remaining:"+voxels[0].remainingLifetime);
+            voxelsUpdated = false;
         }
+
+        if (Input.GetKeyDown(KeyCode.T)) {
+            for (int i = 0; i < voxelsCount; i++)
+            {
+                voxels[i].startColor = new Color(0.0f, 0.0f, 1.0f);
+                voxels[i].startSize = voxelScale;
+                voxels[voxelsCount].startLifetime = startLifetime;
+                voxels[voxelsCount].remainingLifetime = startLifetime;
+                voxels[i].position = new Vector3(
+                    Random.Range(-bound, bound), Random.Range(-bound / 2, bound / 2), Random.Range(-bound, bound)
+                    );
+            }
+            voxelsUpdated = true;
+        }
+
+        UpdateVoxelsLifetime();
     }
 
-    void InitVoxels()
+    private void UpdateVoxelsLifetime()
     {
-        voxels = new ParticleSystem.Particle[numPoints];
-
-        Vector3[] positions = new Vector3[numPoints];
-        Color[] colors = new Color[numPoints];
-
-        for (int i = 0; i < numPoints; i++)
+        for (int i = 0; i < voxels.Length; i++)
         {
-            voxels[i].position = new Vector3(
-                Random.Range(-bound, bound), Random.Range(-bound / 2, bound / 2), Random.Range(-bound, bound)
-                );
-            positions[i] = new Vector3(
-                Random.Range(-bound, bound), Random.Range(-bound / 2, bound / 2), Random.Range(-bound, bound)
-                );
-            float intensity = Mathf.Clamp((float)voxelsCount / (float)numPoints, 0.0f, 1.0f);
-            colors[i] = new Color(intensity, 0.0f, 0.0f);
-            voxels[i].startColor = colors[i];
-            voxels[i].startSize = voxelScale;
+            if (voxels[i].remainingLifetime > 0)
+            {
+                voxels[i].remainingLifetime -= Time.deltaTime;
+            }
         }
-    }
-
-    void SetVoxels()
-    {
-        foreach (var voxel in voxels)
+        cumulativeTime += Time.deltaTime;
+        if (cumulativeTime > 1.0f)
         {
-            // UPDATE VOXEL HERE
+            cumulativeTime = 0.0f;
         }
-
-        Debug.Log("Voxel count:" + voxels.Length);
         voxelsUpdated = true;
     }
 
