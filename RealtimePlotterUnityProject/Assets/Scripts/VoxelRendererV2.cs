@@ -53,9 +53,14 @@ public class VoxelRenderer2 : MonoBehaviour
 
     private IEnumerator UpdateLoop()
     {
+        var whiteVec = new Color(1.0f, 1.0f, 1.0f);
+        var redVec = new Color(1.0f, 0.0f, 0.0f);
+
         while (voxelsCount < maxPoints)
         {
-            AddPoints(pointPerSec, new Color(Random.value, Random.value, Random.value));
+            var color = Color.Lerp(whiteVec, redVec, Random.value);
+            
+            AddPoints(pointPerSec, color);
             yield return new WaitForSeconds(1/updatesPerSec);
             voxelsUpdated = true;
         }
