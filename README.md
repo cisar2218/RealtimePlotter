@@ -10,3 +10,8 @@ Data plotter for realtime data collecting. Developed for Thunderfly s.r.o.
 
 **Dron movement**
 * `LAlt` + `W`,`A`,`S`,`D`: Horizontal movement.
+
+
+## Packages
+- for web sockets: https://github.com/endel/NativeWebSocket
+- for map: https://cesium.com/platform/cesium-for-unity/
