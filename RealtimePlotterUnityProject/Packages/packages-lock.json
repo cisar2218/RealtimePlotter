@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.cesium.unity": {
-      "version": "1.8.0",
+      "version": "1.10.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -11,6 +11,13 @@
         "com.unity.inputsystem": "1.4.2"
       },
       "url": "https://unity.pkg.cesium.com"
+    },
+    "com.endel.nativewebsocket": {
+      "version": "https://github.com/endel/NativeWebSocket.git#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c5101c07762251edc82caad9e8a39d51b1229c31"
     },
     "com.unity.burst": {
       "version": "1.8.11",
