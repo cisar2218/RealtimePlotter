@@ -37,6 +37,7 @@ public class PlayerController : MonoBehaviour
         var x = Input.GetAxisRaw("Horizontal") * speed * Time.deltaTime;
         var z = Input.GetAxisRaw("Vertical") * speed * Time.deltaTime;
 
+    
         // speedup
         bool speedUp = Input.GetKey(KeyCode.LeftShift);
         if (speedUp)

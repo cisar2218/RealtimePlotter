@@ -7,6 +7,7 @@ using static UnityEngine.Rendering.DebugUI;
 
 public class VoxelRenderer : MonoBehaviour
 {
+
     ParticleSystem system;
     
     ParticleSystem.Particle[] voxels;
@@ -54,6 +55,74 @@ public class VoxelRenderer : MonoBehaviour
         system = GetComponent<ParticleSystem>();
     }
 
+
+    public void AddPoint(Vector3 cartesianPosition, float value) {
+        values[voxelsCount] = value;
+
+        // Update min/max if changed
+        if (values[voxelsCount] > valueCurrentMax)
+        {
+            valueCurrentMax = values[voxelsCount];
+            float valMid = (valueCurrentMax+valueCurrentMin)/2;
+            onMaxValueChangedEvent?.Invoke(valueCurrentMin, valMid, valueCurrentMax);
+        }
+        if (values[voxelsCount] < valueCurrentMin)
+        {
+            valueCurrentMin = values[voxelsCount];
+            float valMid = (valueCurrentMax+valueCurrentMin)/2;
+            onMaxValueChangedEvent?.Invoke(valueCurrentMin, valMid, valueCurrentMax);
+        }
+        var color = Color.Lerp(minColor, maxColor, values[voxelsCount] / valueCurrentMax);
+
+        voxels[voxelsCount].startColor = color;
+        voxels[voxelsCount].startSize = voxelScale;
+        voxels[voxelsCount].startLifetime = startLifetime;
+        voxels[voxelsCount].remainingLifetime = startLifetime;
+
+        voxels[voxelsCount].position = cartesianPosition;
+        voxelsCount += 1;
+    }
+
+    private void AddPoints(Message[] messages, int howMany)
+    {
+        var initVoxelsCount = voxelsCount;
+        int i = 0;
+        while (voxelsCount < initVoxelsCount + howMany)
+        {
+            values[voxelsCount] = messages[i].value;
+            
+            // Update min/max if changed
+            if (values[voxelsCount] > valueCurrentMax)
+            {
+                valueCurrentMax = values[voxelsCount];
+                float valMid = (valueCurrentMax+valueCurrentMin)/2;
+                onMaxValueChangedEvent?.Invoke(valueCurrentMin, valMid, valueCurrentMax);
+            }
+            if (values[voxelsCount] < valueCurrentMin)
+            {
+                valueCurrentMin = values[voxelsCount];
+                float valMid = (valueCurrentMax+valueCurrentMin)/2;
+                onMaxValueChangedEvent?.Invoke(valueCurrentMin, valMid, valueCurrentMax);
+            }
+            
+            // assign color based on value
+            var color = Color.Lerp(minColor, maxColor, values[voxelsCount] / valueCurrentMax);
+
+            voxels[voxelsCount].startColor = color;
+            voxels[voxelsCount].startSize = voxelScale;
+            voxels[voxelsCount].startLifetime = startLifetime;
+            voxels[voxelsCount].remainingLifetime = startLifetime;
+
+            var posX = dronTransform.position.x + Random.Range(-bound, bound);
+            var posY = dronTransform.position.y + Random.Range(-bound, bound) / 2;
+            var posZ = dronTransform.position.z + Random.Range(-bound, bound);
+            voxels[voxelsCount].position = new Vector3(
+                posX, posY, posZ
+                );
+            voxelsCount += 1;
+        }
+    }
+
     private void AddPoints(int howMany)
     {
         var initVoxelsCount = voxelsCount;
@@ -93,28 +162,21 @@ public class VoxelRenderer : MonoBehaviour
     private void UpdateColors(int howMany)
     {
         for (int i = 0; i < howMany; i++) {
-            var color = Color.Lerp(minColor, maxColor, values[i] / valueCurrentMax);
+            var color = Color.Lerp(minColor, maxColor, values[i] * valueCurrentMin / valueCurrentMax);
             voxels[i].startColor = color;
         }
-    }
-
-    void ScaleMaxSeiling(float scaleFactor)
-    {
-        valueSealing = valueCurrentMax * scaleFactor;
     }
 
     private IEnumerator UpdateLoop()
     {
         while (voxelsCount < maxPoints)
         {
-            AddPoints(pointPerSec);
             UpdateColors(voxelsCount-pointPerSec);
             yield return new WaitForSeconds(1/updatesPerSec);
-            // extend max 
-            ScaleMaxSeiling(1.10f);
             
             voxelsUpdated = true;
         }
+        Debug.LogError("Error: try to draw to many points: "+voxelsCount+", maximum: "+maxPoints);
         voxelsUpdated = true;
     }
 
@@ -124,6 +186,10 @@ public class VoxelRenderer : MonoBehaviour
         values = new float[maxPoints];
     }
 
+    public void InvokeRendering() {
+        StartCoroutine(UpdateLoop());
+    }
+
     void Update()
     {
         if (voxelsUpdated)
@@ -131,11 +197,6 @@ public class VoxelRenderer : MonoBehaviour
             system.SetParticles(voxels, voxels.Length);
             voxelsUpdated = false;
         }
-
-        if (Input.GetKeyDown(KeyCode.Return)) {
-            StartCoroutine(UpdateLoop());
-        }
-
         UpdateVoxelsLifetime();
     }
 

@@ -1,50 +1,90 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 using NativeWebSocket;
+using CesiumForUnity;
+using Unity.Mathematics;
+using UnityEngine.Assertions;
 
 public class WSClient : MonoBehaviour
 {
     WebSocket websocket;
 
-    async void Start()
+    bool isMapPositionSet = false;
+
+    public event Action<WSStatus> OnConnectionChanged;
+
+    private CesiumGeoreference map;
+
+    private VoxelRenderer particleRenderer;
+
+    void Start()
     {
-        websocket = new WebSocket("ws://localhost:8765");
+
+        websocket = new WebSocket("ws://127.0.0.1:3000/ws");
+        map = FindObjectOfType<CesiumGeoreference>();
+        particleRenderer = FindObjectOfType<VoxelRenderer>();
+
+        
+        // TODO error messages
+        Assert.IsNotNull(particleRenderer);
+        Assert.IsNotNull(map);
 
         websocket.OnOpen += () =>
         {
             Debug.Log("Connection open!");
-        
-            // send sample message
-            SendWebSocketMessage();
+            OnConnectionChanged?.Invoke(WSStatus.Opened);
         };
 
         websocket.OnError += (e) =>
         {
             Debug.Log("Error! " + e);
+            OnConnectionChanged?.Invoke(WSStatus.Error);
         };
 
         websocket.OnClose += (e) =>
         {
             Debug.Log("Connection closed!");
+            OnConnectionChanged?.Invoke(WSStatus.Closed);
         };
 
         websocket.OnMessage += (bytes) =>
         {
-            // Debug.Log("OnMessage!");
-            // Debug.Log(bytes);
-
             // getting the message as a string
-            var message = System.Text.Encoding.UTF8.GetString(bytes);
-            Debug.Log("OnMessage! " + message);
+            string message = System.Text.Encoding.UTF8.GetString(bytes);
+
+            try
+            {
+                Message data = JsonUtility.FromJson<Message>(message);
+                if (data.type.ToMessageType() == MessageType.Value)
+                {
+                    Debug.Log("Data as String: "+ data);
+
+                    if (!isMapPositionSet) { // TODO separate map setting
+                        map.latitude = data.lat;
+                        map.longitude = data.lon;
+                        map.height = data.alt;
+                        isMapPositionSet = true;
+                    } else {
+                        double3 earthFixed = CesiumWgs84Ellipsoid.LongitudeLatitudeHeightToEarthCenteredEarthFixed(new double3(data.lon, data.lat, data.alt));
+                        double3 coords = map.TransformEarthCenteredEarthFixedPositionToUnity(earthFixed);
+                        Debug.Log(coords);
+
+                        particleRenderer.AddPoint(new Vector3((float)coords.x, (float)coords.y, (float)coords.z), data.value);
+                    }
+
+                } else if  (data.type.ToMessageType() == MessageType.Clear) {
+                    Debug.Log("clear");
+                }
+            }
+            catch (ArgumentException)
+            {
+                Debug.Log("ArgumentException! " + message);
+            }
         };
+    }
 
-        // Keep sending messages at every 0.3s
-        // InvokeRepeating("SendWebSocketMessage", 0.0f, 0.3f);
-
-
+    async public void Connect()
+    {
         // waiting for messages
         await websocket.Connect();
     }
@@ -72,4 +112,10 @@ public class WSClient : MonoBehaviour
     {
         await websocket.Close();
     }
+}
+
+public enum WSStatus {
+    Opened,
+    Closed,
+    Error,
 }

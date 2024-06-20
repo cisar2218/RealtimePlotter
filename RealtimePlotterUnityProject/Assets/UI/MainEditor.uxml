@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="container-root" style="flex-grow: 1; justify-content: flex-end;">
+        <ui:VisualElement name="container" style="flex-grow: 0; flex-wrap: nowrap; flex-basis: 10%; justify-content: flex-start; flex-direction: row; align-self: auto; height: auto;">
+            <ui:Label tabindex="-1" text="WebSocket Status:" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+            <ui:Label tabindex="-1" text="Closed" parse-escape-sequences="true" display-tooltip-when-elided="true" name="status" />
+            <ui:Button text="Connect" parse-escape-sequences="true" display-tooltip-when-elided="true" name="connect" />
+            <ui:Button text="Load" parse-escape-sequences="true" display-tooltip-when-elided="true" name="load" />
+            <ui:Button text="Render" parse-escape-sequences="true" display-tooltip-when-elided="true" name="render" />
+            <ui:Button text="Load &amp; Render" parse-escape-sequences="true" display-tooltip-when-elided="true" name="load" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
