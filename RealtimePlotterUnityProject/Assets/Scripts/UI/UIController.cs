@@ -32,6 +32,7 @@ public class UIController : MonoBehaviour
 
 
         loadButton.clicked += () => {
+            particleRenderer.voxelsCount = 0; // clear
             var loader = FindAnyObjectByType<DataLoader>();
 
             StartCoroutine(loader.GetMeasurement("zaznam3"));
@@ -41,12 +42,14 @@ public class UIController : MonoBehaviour
             switch (status) {
                 case WSStatus.Opened:
                     statusLabel.text = "Opened";
+                    connectButton.text = "Disconnect";
                     break;
                 case WSStatus.Error:
                     statusLabel.text = "Error";
                     break;
                 case WSStatus.Closed:
                     statusLabel.text = "Closed";
+                    connectButton.text = "Connect";
                     break;
             }
         };
