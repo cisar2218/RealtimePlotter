@@ -11,6 +11,8 @@ public class WSClient : MonoBehaviour
 
     bool isMapPositionSet = false;
 
+    public bool IsConnected = false;
+
     public event Action<WSStatus> OnConnectionChanged;
 
     private CesiumGeoreference map;
@@ -24,13 +26,15 @@ public class WSClient : MonoBehaviour
         map = FindObjectOfType<CesiumGeoreference>();
         particleRenderer = FindObjectOfType<VoxelRenderer>();
 
-        
+
         // TODO error messages
         Assert.IsNotNull(particleRenderer);
         Assert.IsNotNull(map);
 
         websocket.OnOpen += () =>
         {
+            IsConnected = true;
+
             Debug.Log("Connection open!");
             OnConnectionChanged?.Invoke(WSStatus.Opened);
         };
@@ -43,6 +47,7 @@ public class WSClient : MonoBehaviour
 
         websocket.OnClose += (e) =>
         {
+            IsConnected = false;
             Debug.Log("Connection closed!");
             OnConnectionChanged?.Invoke(WSStatus.Closed);
         };
@@ -57,14 +62,17 @@ public class WSClient : MonoBehaviour
                 Message data = JsonUtility.FromJson<Message>(message);
                 if (data.type.ToMessageType() == MessageType.Value)
                 {
-                    Debug.Log("Data as String: "+ data);
+                    Debug.Log("Data as String: " + data);
 
-                    if (!isMapPositionSet) { // TODO separate map setting
+                    if (!isMapPositionSet)
+                    { // TODO separate map setting
                         map.latitude = data.lat;
                         map.longitude = data.lon;
                         map.height = data.alt;
                         isMapPositionSet = true;
-                    } else {
+                    }
+                    else
+                    {
                         double3 earthFixed = CesiumWgs84Ellipsoid.LongitudeLatitudeHeightToEarthCenteredEarthFixed(new double3(data.lon, data.lat, data.alt));
                         double3 coords = map.TransformEarthCenteredEarthFixedPositionToUnity(earthFixed);
                         Debug.Log(coords);
@@ -72,7 +80,9 @@ public class WSClient : MonoBehaviour
                         particleRenderer.AddPoint(new Vector3((float)coords.x, (float)coords.y, (float)coords.z), data.value);
                     }
 
-                } else if  (data.type.ToMessageType() == MessageType.Clear) {
+                }
+                else if (data.type.ToMessageType() == MessageType.Clear)
+                {
                     Debug.Log("clear");
                 }
             }
@@ -83,10 +93,26 @@ public class WSClient : MonoBehaviour
         };
     }
 
+    async public void ToggleConnection()
+    {
+        if (IsConnected)
+        {
+            await websocket.Close();
+        }
+        else
+        {
+            await websocket.Connect();
+        }
+    }
+
     async public void Connect()
     {
-        // waiting for messages
         await websocket.Connect();
+    }
+
+    async public void Close()
+    {
+        await websocket.Close();
     }
 
     void Update()
@@ -114,7 +140,8 @@ public class WSClient : MonoBehaviour
     }
 }
 
-public enum WSStatus {
+public enum WSStatus
+{
     Opened,
     Closed,
     Error,

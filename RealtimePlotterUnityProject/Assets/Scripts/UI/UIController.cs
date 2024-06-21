@@ -16,13 +16,14 @@ public class UIController : MonoBehaviour
         Button connectButton = root.Q<Button>("connect");        
         Button loadButton = root.Q<Button>("load");
         Button renderButton = root.Q<Button>("render");
+
+        VisualElement indicator = root.Q<VisualElement>("indicator");
         
         Label statusLabel = root.Q<Label>("status");
 
         connectButton.clicked += () => {
-            statusLabel.text = "Connecting ...";
-            Debug.Log("attempting connection");
-            client.Connect();
+            client.ToggleConnection();
+            connectButton.SetEnabled(false);
         };
 
         renderButton.clicked += () => {
@@ -43,15 +44,24 @@ public class UIController : MonoBehaviour
                 case WSStatus.Opened:
                     statusLabel.text = "Opened";
                     connectButton.text = "Disconnect";
+                    indicator.style.backgroundColor = Color.green;
+
                     break;
+
                 case WSStatus.Error:
                     statusLabel.text = "Error";
+                    indicator.style.backgroundColor = Color.red;
                     break;
+
                 case WSStatus.Closed:
+
                     statusLabel.text = "Closed";
                     connectButton.text = "Connect";
+                    indicator.style.backgroundColor = Color.grey;
+
                     break;
             }
+            connectButton.SetEnabled(true);
         };
     }
 }

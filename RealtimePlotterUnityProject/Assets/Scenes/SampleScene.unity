@@ -769,6 +769,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 063ff2d4c30a96a49931983afe36b068, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsConnected: 0
 --- !u!4 &1199232683
 Transform:
   m_ObjectHideFlags: 0
@@ -5630,7 +5631,7 @@ MonoBehaviour:
   voxelsCount: 0
   maxPoints: 50000
   pointPerSec: 8
-  voxelScale: 5
+  voxelScale: 1
   updatesPerSec: 3
   startLifetime: 10
   valueCurrentMin: 0
@@ -5856,7 +5857,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
+  m_ScaleFactor: 0.9
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
@@ -5978,7 +5979,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4847317452732004532, guid: 402f4cb01f5021047a71196fa6814afa, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -910
+      value: -1000
       objectReference: {fileID: 0}
     - target: {fileID: 4847317452732004532, guid: 402f4cb01f5021047a71196fa6814afa, type: 3}
       propertyPath: m_AnchoredPosition.y
