@@ -7,50 +7,62 @@ public class UIController : MonoBehaviour
     private VoxelRenderer particleRenderer;
 
 
-    private void OnEnable() {
+    private void OnEnable()
+    {
         VisualElement root = GetComponent<UIDocument>().rootVisualElement;
 
         client = FindAnyObjectByType<WSClient>();
         particleRenderer = FindAnyObjectByType<VoxelRenderer>();
 
-        Button connectButton = root.Q<Button>("connect");        
+        Button connectButton = root.Q<Button>("connect");
         Button loadButton = root.Q<Button>("load");
         Button renderButton = root.Q<Button>("render");
 
         VisualElement indicator = root.Q<VisualElement>("indicator");
-        
+
         Label statusLabel = root.Q<Label>("status");
 
-        connectButton.clicked += () => {
+        loadButton.SetEnabled(false);
+
+
+        connectButton.clicked += () =>
+        {
             client.ToggleConnection();
             connectButton.SetEnabled(false);
         };
 
-        renderButton.clicked += () => {
-            particleRenderer.InvokeRendering();
-            Debug.Log("rendering invoked");
-        };
+        // renderButton.clicked += () =>
+        // {
+        //     particleRenderer.InvokeRendering();
+        //     Debug.Log("rendering invoked");
+        // };
 
 
-        loadButton.clicked += () => {
+        loadButton.clicked += () =>
+        {
             particleRenderer.voxelsCount = 0; // clear
             var loader = FindAnyObjectByType<DataLoader>();
 
             StartCoroutine(loader.GetMeasurement("zaznam3"));
         };
 
-        client.OnConnectionChanged += (status) => {
-            switch (status) {
+        client.OnConnectionChanged += (status) =>
+        {
+            switch (status)
+            {
                 case WSStatus.Opened:
                     statusLabel.text = "Opened";
                     connectButton.text = "Disconnect";
                     indicator.style.backgroundColor = Color.green;
 
+                    loadButton.SetEnabled(true);
                     break;
 
                 case WSStatus.Error:
                     statusLabel.text = "Error";
                     indicator.style.backgroundColor = Color.red;
+
+                    loadButton.SetEnabled(false);
                     break;
 
                 case WSStatus.Closed:
@@ -59,6 +71,7 @@ public class UIController : MonoBehaviour
                     connectButton.text = "Connect";
                     indicator.style.backgroundColor = Color.grey;
 
+                    loadButton.SetEnabled(false);
                     break;
             }
             connectButton.SetEnabled(true);
