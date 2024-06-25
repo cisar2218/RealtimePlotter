@@ -4,7 +4,6 @@
         <ui:VisualElement name="container" style="flex-grow: 0; flex-wrap: nowrap; flex-basis: 10%; justify-content: flex-end; flex-direction: row; align-self: flex-end; height: auto; width: 100%; align-items: flex-start;">
             <ui:Button text="Connect" parse-escape-sequences="true" display-tooltip-when-elided="true" name="connect" />
             <ui:Button text="Load" parse-escape-sequences="true" display-tooltip-when-elided="true" name="load" />
-            <ui:Button text="Render" parse-escape-sequences="true" display-tooltip-when-elided="true" name="render" style="align-self: auto;" />
         </ui:VisualElement>
         <ui:VisualElement name="mid-container" style="flex-grow: 0; flex-wrap: nowrap; flex-basis: 86%; justify-content: flex-start; flex-direction: row; align-self: flex-start; height: auto;" />
         <ui:VisualElement name="botton-box" style="flex-grow: 0; flex-wrap: nowrap; flex-basis: 6%; justify-content: flex-end; flex-direction: row; align-self: auto; height: auto; background-color: rgb(104, 104, 104);">

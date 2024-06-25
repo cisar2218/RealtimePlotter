@@ -18,6 +18,7 @@ public class WSClient : MonoBehaviour
     private CesiumGeoreference map;
 
     private VoxelRenderer particleRenderer;
+    public Transform dron;
 
     void Start()
     {
@@ -30,6 +31,7 @@ public class WSClient : MonoBehaviour
         // TODO error messages
         Assert.IsNotNull(particleRenderer);
         Assert.IsNotNull(map);
+        Assert.IsNotNull(dron);
 
         websocket.OnOpen += () =>
         {
@@ -60,30 +62,49 @@ public class WSClient : MonoBehaviour
             try
             {
                 Message data = JsonUtility.FromJson<Message>(message);
-                if (data.type.ToMessageType() == MessageType.Value)
+                var msgType = data.type.ToMessageType();
+
+                switch (msgType)
                 {
-                    Debug.Log("Data as String: " + data);
+                    case MessageType.Value:
+                        {
+                            if (!isMapPositionSet) // TODO separate map setting
+                            {
+                                map.latitude = data.lat;
+                                map.longitude = data.lon;
+                                map.height = data.alt;
+                                isMapPositionSet = true;
+                            }
 
-                    if (!isMapPositionSet)
-                    { // TODO separate map setting
-                        map.latitude = data.lat;
-                        map.longitude = data.lon;
-                        map.height = data.alt;
-                        isMapPositionSet = true;
-                    }
-                    else
-                    {
-                        double3 earthFixed = CesiumWgs84Ellipsoid.LongitudeLatitudeHeightToEarthCenteredEarthFixed(new double3(data.lon, data.lat, data.alt));
-                        double3 coords = map.TransformEarthCenteredEarthFixedPositionToUnity(earthFixed);
-                        Debug.Log(coords);
+                            Vector3 cartCoords = map.GeoToCartesian(data);
+                            particleRenderer.AddPoint(cartCoords, data.value);
+                            break;
+                        }
+                    case MessageType.Pos:
+                        {
+                            Vector3 cartCoords = map.GeoToCartesian(data);
 
-                        particleRenderer.AddPoint(new Vector3((float)coords.x, (float)coords.y, (float)coords.z), data.value);
-                    }
+                            // dron.position = cartCoords; TODO this one is correct
+                            dron.position = new Vector3(data.lon, data.alt, data.lat);  // TODO remove this line
 
-                }
-                else if (data.type.ToMessageType() == MessageType.Clear)
-                {
-                    Debug.Log("clear");
+                            Debug.Log("Dron position set to: " + dron.position);
+                            break;
+                        }
+                    case MessageType.Att:
+                        {
+                            // float deg = "radians_value" * Mathf.Rad2Deg; TODO remove if not needed
+                            dron.Rotate(data.roll, data.pitch, data.yaw);
+                            Debug.Log(String.Format("Dron rotation set to pitch:{0} yaw:{1} roll{2}", data.pitch, data.yaw, data.roll));
+                            break;
+                        }
+                    case MessageType.Clear:
+                        {
+                            Debug.Log("clear");
+                            break;
+                        }
+                    default:
+                        Debug.LogWarning("unknown message received: " + message);
+                        break;
                 }
             }
             catch (ArgumentException)

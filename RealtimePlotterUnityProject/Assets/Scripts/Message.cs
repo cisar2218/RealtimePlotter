@@ -9,6 +9,9 @@ public class Message
     public float lon = 0; 
     public float lat = 0;
     public float alt = 0;
+    public float pitch = 0;
+    public float roll = 0;
+    public float yaw = 0;
     public float value = 0;
 
     override public string ToString() {
@@ -18,6 +21,8 @@ public class Message
 
 public enum MessageType {
     Value,
+    Pos,
+    Att,
     Clear,
     None
 }
