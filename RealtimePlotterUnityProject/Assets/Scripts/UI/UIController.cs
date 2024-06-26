@@ -22,11 +22,15 @@ public class UIController : MonoBehaviour
 
         Label statusLabel = root.Q<Label>("status");
 
+        TextField endpointTextfield = root.Q<TextField>("endpoint");
+
         loadButton.SetEnabled(false);
 
 
         connectButton.clicked += () =>
         {
+            client.endpoint = endpointTextfield.text;
+            endpointTextfield.SetEnabled(false);
             client.ToggleConnection();
             connectButton.SetEnabled(false);
         };
@@ -63,6 +67,7 @@ public class UIController : MonoBehaviour
                     indicator.style.backgroundColor = Color.red;
 
                     loadButton.SetEnabled(false);
+                    endpointTextfield.SetEnabled(true);
                     break;
 
                 case WSStatus.Closed:
@@ -72,6 +77,7 @@ public class UIController : MonoBehaviour
                     indicator.style.backgroundColor = Color.grey;
 
                     loadButton.SetEnabled(false);
+                    endpointTextfield.SetEnabled(true);
                     break;
             }
             connectButton.SetEnabled(true);

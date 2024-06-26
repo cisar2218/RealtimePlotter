@@ -8,6 +8,7 @@ using UnityEngine.Assertions;
 public class WSClient : MonoBehaviour
 {
     WebSocket websocket;
+    public String endpoint = "ws://127.0.0.1:3000/ws";
 
     bool isMapPositionSet = false;
 
@@ -23,7 +24,7 @@ public class WSClient : MonoBehaviour
     void Start()
     {
 
-        websocket = new WebSocket("ws://127.0.0.1:3000/ws");
+        websocket = new WebSocket(endpoint);
         map = FindObjectOfType<CesiumGeoreference>();
         particleRenderer = FindObjectOfType<VoxelRenderer>();
 
