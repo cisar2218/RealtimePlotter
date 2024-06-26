@@ -68,14 +68,6 @@ public class WSClient : MonoBehaviour
                 {
                     case MessageType.Value:
                         {
-                            if (!isMapPositionSet) // TODO separate map setting
-                            {
-                                map.latitude = data.lat;
-                                map.longitude = data.lon;
-                                map.height = data.alt;
-                                isMapPositionSet = true;
-                            }
-
                             Vector3 cartCoords = map.GeoToCartesian(data);
                             particleRenderer.AddPoint(cartCoords, data.value);
                             break;
@@ -83,17 +75,16 @@ public class WSClient : MonoBehaviour
                     case MessageType.Pos:
                         {
                             Vector3 cartCoords = map.GeoToCartesian(data);
-
-                            // dron.position = cartCoords; TODO this one is correct
-                            dron.position = new Vector3(data.lon, data.alt, data.lat);  // TODO remove this line
+                            dron.position = cartCoords;
 
                             Debug.Log("Dron position set to: " + dron.position);
+                            Debug.Log(data.ToGeoString());
+                            // Debug.Log("Dron position set to: " + data.position);
                             break;
                         }
                     case MessageType.Att:
                         {
-                            // float deg = "radians_value" * Mathf.Rad2Deg; TODO remove if not needed
-                            dron.Rotate(data.roll, data.pitch, data.yaw);
+                            dron.eulerAngles = (new Vector3(-data.pitch, data.yaw, -data.roll)) * Mathf.Rad2Deg;
                             Debug.Log(String.Format("Dron rotation set to pitch:{0} yaw:{1} roll{2}", data.pitch, data.yaw, data.roll));
                             break;
                         }

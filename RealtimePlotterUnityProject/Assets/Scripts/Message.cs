@@ -9,6 +9,7 @@ public class Message
     public float lon = 0; 
     public float lat = 0;
     public float alt = 0;
+    // radians
     public float pitch = 0;
     public float roll = 0;
     public float yaw = 0;
@@ -16,6 +17,10 @@ public class Message
 
     override public string ToString() {
         return string.Format("{0} {1} {2} {3} {4}", type, lon, lat, alt, value);
+    }
+
+    public String ToGeoString() {
+        return String.Format("lon:{0} lat:{1} alt:{2}", lon, lat, alt);
     }
 }
 
