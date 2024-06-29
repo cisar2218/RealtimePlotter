@@ -2,10 +2,15 @@
     <Style src="project://database/Assets/Styles/StyleMain.uss?fileID=7433441132597879392&amp;guid=3778847583850644fa1a5b4c6a0af6df&amp;type=3#StyleMain" />
     <ui:VisualElement name="container-root" style="flex-grow: 1; justify-content: flex-end;">
         <ui:VisualElement name="container" style="flex-grow: 0; flex-wrap: nowrap; flex-basis: 10%; justify-content: flex-end; flex-direction: row; align-self: flex-end; height: auto; width: 100%; align-items: flex-start;">
-            <ui:TextField picking-mode="Ignore" value="ws://127.0.0.1:3000/ws" name="endpoint" style="flex-direction: row; align-items: stretch; justify-content: space-around; align-self: flex-end; position: absolute; height: 32px; top: 0; left: 0;" />
             <ui:Button text="Connect" parse-escape-sequences="true" display-tooltip-when-elided="true" name="connect" />
             <ui:Button text="Load" parse-escape-sequences="true" display-tooltip-when-elided="true" name="load" />
+            <ui:Button text="Find dron" parse-escape-sequences="true" display-tooltip-when-elided="true" name="find-dron" />
+            <ui:Toggle label="Watch dron:" value="false" name="watch-dron-toggle" />
         </ui:VisualElement>
+        <ui:Foldout text="Connection setings" name="Foldout" value="false" style="align-self: flex-end;">
+            <ui:TextField label="Endpoint:" picking-mode="Ignore" value="ws://127.0.0.1:3000/ws" name="endpoint" style="flex-direction: row; align-items: auto; justify-content: space-around; align-self: auto; position: relative; height: 32px; top: 0; left: 0; width: 400px;" />
+            <ui:Toggle label="Autoreconnect:" value="true" />
+        </ui:Foldout>
         <ui:VisualElement name="container" style="flex-grow: 0; flex-wrap: nowrap; flex-basis: 10%; justify-content: flex-end; flex-direction: row; align-self: auto; height: 10px; width: auto; align-items: auto;" />
         <ui:VisualElement name="mid-container" style="flex-grow: 0; flex-wrap: nowrap; flex-basis: 76%; justify-content: flex-start; flex-direction: row; align-self: flex-start; height: auto;" />
         <ui:VisualElement name="botton-box" style="flex-grow: 0; flex-wrap: nowrap; flex-basis: 6%; justify-content: flex-end; flex-direction: row; align-self: auto; height: auto; background-color: rgb(104, 104, 104);">

@@ -6,6 +6,7 @@ public class UIController : MonoBehaviour
     private WSClient client;
     private VoxelRenderer particleRenderer;
 
+    private CameraController cameraController;
 
     private void OnEnable()
     {
@@ -13,10 +14,11 @@ public class UIController : MonoBehaviour
 
         client = FindAnyObjectByType<WSClient>();
         particleRenderer = FindAnyObjectByType<VoxelRenderer>();
+        cameraController = FindAnyObjectByType<CameraController>();
 
         Button connectButton = root.Q<Button>("connect");
         Button loadButton = root.Q<Button>("load");
-        Button renderButton = root.Q<Button>("render");
+        Button findButton = root.Q<Button>("find-dron");
 
         VisualElement indicator = root.Q<VisualElement>("indicator");
 
@@ -24,8 +26,19 @@ public class UIController : MonoBehaviour
 
         TextField endpointTextfield = root.Q<TextField>("endpoint");
 
+        Toggle watchDronToggle = root.Q<Toggle>("watch-dron-toggle");
+
         loadButton.SetEnabled(false);
 
+        findButton.clicked += () =>
+        {
+            cameraController.dronToBeFound = true;
+        };
+
+        watchDronToggle.RegisterCallback<ChangeEvent<bool>>((evt) =>
+        {
+            cameraController.isWatchingDron = evt.newValue;
+        });
 
         connectButton.clicked += () =>
         {
@@ -34,13 +47,6 @@ public class UIController : MonoBehaviour
             client.ToggleConnection();
             connectButton.SetEnabled(false);
         };
-
-        // renderButton.clicked += () =>
-        // {
-        //     particleRenderer.InvokeRendering();
-        //     Debug.Log("rendering invoked");
-        // };
-
 
         loadButton.clicked += () =>
         {
@@ -78,6 +84,9 @@ public class UIController : MonoBehaviour
 
                     loadButton.SetEnabled(false);
                     endpointTextfield.SetEnabled(true);
+
+                    // try to reconnect automatically
+                    client.Connect();
                     break;
             }
             connectButton.SetEnabled(true);

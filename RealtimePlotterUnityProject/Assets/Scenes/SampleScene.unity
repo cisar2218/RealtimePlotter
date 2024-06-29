@@ -428,7 +428,7 @@ GameObject:
   - component: {fileID: 963194229}
   - component: {fileID: 963194230}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: FreeCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -501,12 +501,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -45}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1728673688}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &963194229
 MonoBehaviour:
@@ -515,14 +515,16 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36ce8cbd17d70844094c92c6a2d2a4b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dron: {fileID: 1133075639}
   speed: 10
-  player: {fileID: 1728673688}
-  mouseSensitivity: 200
+  mouseSensitivity: 100
+  isWatchingDron: 0
+  dronToBeFound: 0
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -597,12 +599,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _originAuthority: 0
-  _latitude: 47.3976
-  _longitude: 8.5452
-  _height: 532.7999877929688
-  _ecefX: 4277597.070002666
-  _ecefY: 642741.4940752563
-  _ecefZ: 4672190.974059164
+  _latitude: 49.49577
+  _longitude: 18.88374
+  _height: 609.5689697265625
+  _ecefX: 3927640.9577640384
+  _ecefY: 1343486.9005509766
+  _ecefZ: 4827014.769222663
   _scale: 1
 --- !u!4 &1017362820
 Transform:
@@ -879,6 +881,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 063ff2d4c30a96a49931983afe36b068, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  endpoint: ws://127.0.0.1:3000/ws
   IsConnected: 0
   dron: {fileID: 1133075639}
 --- !u!4 &1199232683
@@ -5749,80 +5752,6 @@ MonoBehaviour:
   valueCurrentMax: 0
   bound: 15
   dronTransform: {fileID: 0}
---- !u!1 &1728673687
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1728673688}
-  - component: {fileID: 1728673689}
-  - component: {fileID: 1728673690}
-  m_Layer: 0
-  m_Name: FirstPersonPlayer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1728673688
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1728673687}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -45}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 963194228}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!143 &1728673689
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1728673687}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Height: 2
-  m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1728673690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1728673687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81eb02b34e571504dae019d3065d9974, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 15
-  speedVertical: 15
 --- !u!1 &1829258027
 GameObject:
   m_ObjectHideFlags: 0
@@ -6128,7 +6057,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 705507995}
   - {fileID: 1322655113}
-  - {fileID: 1728673688}
+  - {fileID: 963194228}
   - {fileID: 860204984}
   - {fileID: 1017362820}
   - {fileID: 1133075639}
