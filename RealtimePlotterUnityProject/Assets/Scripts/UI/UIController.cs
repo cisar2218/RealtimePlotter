@@ -24,11 +24,22 @@ public class UIController : MonoBehaviour
 
         Label statusLabel = root.Q<Label>("status");
 
+        FloatField lifetimeField = root.Q<FloatField>("particle-lifetime");
+
         TextField endpointTextfield = root.Q<TextField>("endpoint");
 
         Toggle watchDronToggle = root.Q<Toggle>("watch-dron-toggle");
 
         loadButton.SetEnabled(false);
+
+        lifetimeField.RegisterCallback<ChangeEvent<float>>((evt) => {
+            if (evt.newValue >= 0) {
+                Debug.Log("new value: "+evt.newValue);
+                particleRenderer.startLifetime = evt.newValue;
+            } else {
+                lifetimeField.value = 0;
+            }
+        });
 
         findButton.clicked += () =>
         {

@@ -11,6 +11,9 @@
             <ui:TextField label="Endpoint:" picking-mode="Ignore" value="ws://127.0.0.1:3000/ws" name="endpoint" style="flex-direction: row; align-items: auto; justify-content: space-around; align-self: auto; position: relative; height: 32px; top: 0; left: 0; width: 400px;" />
             <ui:Toggle label="Autoreconnect:" value="true" />
         </ui:Foldout>
+        <ui:Foldout text="Particle Settings" name="Foldout" value="true" style="align-self: flex-end;">
+            <ui:FloatField label="Lifetime" value="10" name="particle-lifetime" style="width: 400px; height: 32px; position: relative; justify-content: space-around; align-items: auto;" />
+        </ui:Foldout>
         <ui:VisualElement name="container" style="flex-grow: 0; flex-wrap: nowrap; flex-basis: 10%; justify-content: flex-end; flex-direction: row; align-self: auto; height: 10px; width: auto; align-items: auto;" />
         <ui:VisualElement name="mid-container" style="flex-grow: 0; flex-wrap: nowrap; flex-basis: 76%; justify-content: flex-start; flex-direction: row; align-self: flex-start; height: auto;" />
         <ui:VisualElement name="botton-box" style="flex-grow: 0; flex-wrap: nowrap; flex-basis: 6%; justify-content: flex-end; flex-direction: row; align-self: auto; height: auto; background-color: rgb(104, 104, 104);">
